@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<!-- 内联六边形 favicon，呼应品牌签名元素 -->
+		<link
+			rel="icon"
+			href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpolygon points='9,1 23,1 31,16 23,31 9,31 1,16' fill='%23DB0011'/%3E%3C/svg%3E"
+		/>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>HSBC Universal Workflow Console</title>
+		<!--
+		  字体方案：IBM Plex 单一家族纪律（国际银行通行做法）：
+		  - IBM Plex Sans  : 展示 + 正文 —— 以字重（700/600 vs 400）制造层级
+		  - IBM Plex Mono  : 数据字体 —— 单号、金额、日期
+		-->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+			rel="stylesheet"
+		/>
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>
