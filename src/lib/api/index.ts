@@ -29,7 +29,7 @@ function delay(ms = 260) {
 /* ==================== 查询 ==================== */
 
 export interface ListQuery {
-	/** 单号 / 申请人 / 差旅地点模糊搜索 */
+	/** 单号 / 标题 / 申请人 / 差旅地点 / 成本中心模糊搜索 */
 	search?: string;
 	/** 类型筛选（'all' 表示不限） */
 	typeId?: string;
@@ -54,8 +54,10 @@ export async function listApplications(query: ListQuery = {}): Promise<Applicati
 					app.id,
 					person?.nameZh ?? '',
 					person?.nameEn ?? '',
+					String(app.fields.title ?? ''),
 					String(app.fields.depart_place ?? ''),
-					String(app.fields.dest_place ?? '')
+					String(app.fields.dest_place ?? ''),
+					String(app.fields.cost_center ?? '')
 				]
 					.join(' ')
 					.toLowerCase();

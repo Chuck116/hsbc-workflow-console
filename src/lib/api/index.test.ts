@@ -106,10 +106,11 @@ describe('创建申请', () => {
 });
 
 describe('状态流转（并行会签）', () => {
-	// 每个用例前重新定位一条草稿（beforeEach 会重新播种，事件 id 随机）
+	// 每个用例前重新定位一条草稿（beforeEach 会重新播种，事件 id 随机）。
+	// 限定双人默认审批链：排除申请人即负责人（单人链）与加签（三人链）的草稿
 	let draftId: string;
 	beforeEach(() => {
-		draftId = get(applications).find((a) => a.status === 'draft')!.id;
+		draftId = get(applications).find((a) => a.status === 'draft' && a.approvers.length === 2)!.id;
 	});
 
 	it('submit：draft → submitted 且刷新提交时间', async () => {

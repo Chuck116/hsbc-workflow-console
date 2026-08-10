@@ -40,14 +40,58 @@ export const TRAVEL_SCHEMA: ApplicationTypeSchema = {
 	builtIn: true,
 	fields: [
 		...APPLICANT_FIELDS,
-		// 字段顺序即重要性顺序：行程与时间等核心决策字段在前，金额次之，
-		// 出行方式与同行人再次之，富文本事由靠后，附件垫底
+		// 字段顺序即重要性顺序（外企差旅申报惯例）：
+		// 标题与行程定性在前 → 行程与时间 → 财务归属（成本中心 / 币种 / 预算 / 项目）
+		// → 预借 → 出行方式与同行人 → 富文本事由 → 附件垫底
+		{ key: 'title', type: 'text', label: 'fields.title', required: true },
+		{
+			key: 'travel_type',
+			type: 'select',
+			label: 'fields.travelType',
+			required: true,
+			options: [
+				{ value: 'customer_visit', label: 'options.customerVisit' },
+				{ value: 'internal_meeting', label: 'options.internalMeeting' },
+				{ value: 'project_delivery', label: 'options.projectDelivery' },
+				{ value: 'training', label: 'options.training' },
+				{ value: 'audit_compliance', label: 'options.auditCompliance' },
+				{ value: 'conference', label: 'options.conference' },
+				{ value: 'other', label: 'options.other' }
+			]
+		},
+		{
+			key: 'travel_scope',
+			type: 'select',
+			label: 'fields.travelScope',
+			required: true,
+			options: [
+				{ value: 'domestic', label: 'options.scopeDomestic' },
+				{ value: 'international', label: 'options.scopeInternational' }
+			]
+		},
 		{ key: 'depart_place', type: 'text', label: 'fields.departPlace', required: true },
 		{ key: 'dest_place', type: 'text', label: 'fields.destPlace', required: true },
 		{ key: 'travel_start', type: 'datetime', label: 'fields.travelStart', required: true },
 		{ key: 'travel_end', type: 'datetime', label: 'fields.travelEnd', required: true, after: 'travel_start' },
 		{ key: 'travel_days', type: 'number', label: 'fields.travelDays', required: true, min: 1, max: 60 },
+		{ key: 'cost_center', type: 'text', label: 'fields.costCenter', required: true },
+		{
+			key: 'currency',
+			type: 'select',
+			label: 'fields.currency',
+			required: true,
+			// 币种代码国际通用，label 直接存原文（i18n 查不到时原样返回）
+			options: [
+				{ value: 'CNY', label: 'CNY' },
+				{ value: 'USD', label: 'USD' },
+				{ value: 'EUR', label: 'EUR' },
+				{ value: 'GBP', label: 'GBP' },
+				{ value: 'HKD', label: 'HKD' },
+				{ value: 'SGD', label: 'SGD' }
+			]
+		},
 		{ key: 'estimate_budget', type: 'number', label: 'fields.estimateBudget', required: true, min: 0 },
+		{ key: 'project_code', type: 'text', label: 'fields.projectCode', required: false },
 		{
 			key: 'is_advance',
 			type: 'select',

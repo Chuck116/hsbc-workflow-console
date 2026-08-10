@@ -41,6 +41,20 @@ const DEPT_NAMES: Record<string, string> = {
 	mkt: '市场部'
 };
 const DESTINATIONS = ['上海', '北京', '广州', '深圳', '新加坡', '伦敦', '东京', '中国香港'];
+/** 境内目的地：决定差旅范围（国内 / 国际）与结算币种 */
+const DOMESTIC_CITIES = new Set(['上海', '北京', '广州', '深圳']);
+const INTL_CURRENCIES = ['USD', 'EUR', 'GBP', 'HKD', 'SGD'];
+/** 成本中心池（外企财务归属编码风格） */
+const COST_CENTERS = ['CC-3100-OPS', 'CC-3210-OPS', 'CC-4100-FIN', 'CC-5150-IT', 'CC-6200-MKT', 'CC-7100-HR'];
+/** 差旅类型素材：value 对齐 Schema 选项，label 用于拼接申请标题 */
+const TRIP_TYPES = [
+	{ value: 'customer_visit', label: '客户拜访' },
+	{ value: 'internal_meeting', label: '内部会议' },
+	{ value: 'project_delivery', label: '项目驻场' },
+	{ value: 'training', label: '培训交流' },
+	{ value: 'audit_compliance', label: '合规检查' },
+	{ value: 'conference', label: '行业会议' }
+];
 const TRANSPORTS = ['plane', 'train', 'car'];
 const TRAVEL_REASONS = [
 	'客户现场支持与季度业务回顾',
@@ -93,11 +107,18 @@ function buildFields(
 	const days = Math.floor(rnd() * 4) + 1;
 
 	const advance = rnd() < 0.3;
+	// 标题 / 差旅范围 / 币种由目的地与差旅类型派生，保证字段间自洽
+	const dest = pick(DESTINATIONS);
+	const tripType = pick(TRIP_TYPES);
+	const domestic = DOMESTIC_CITIES.has(dest);
 	return {
 		...applicantCommon,
+		title: `${dest} · ${tripType.label}`,
+		travel_type: tripType.value,
+		travel_scope: domestic ? 'domestic' : 'international',
 		travel_reason: pick(TRAVEL_REASONS),
 		depart_place: '上海',
-		dest_place: pick(DESTINATIONS),
+		dest_place: dest,
 		// 起止时间与天数字段自洽：09:00 出发，第 days 个自然日 17:00 结束
 		// （travel_days 的派生规则 = 自然日含首尾，见 schema/auto.ts deriveTravelDays）
 		travel_start: dt(start + 9 * 3600_000),
@@ -105,7 +126,10 @@ function buildFields(
 		travel_days: days,
 		...(rnd() < 0.2 ? { peer_user: pick(PEOPLE.filter((p) => p.id !== person.id)).nameZh } : {}),
 		...(rnd() < 0.8 ? { traffic_mode: pick(TRANSPORTS) } : {}),
+		cost_center: pick(COST_CENTERS),
+		currency: domestic ? 'CNY' : pick(INTL_CURRENCIES),
 		estimate_budget: Math.floor(rnd() * 18 + 3) * 1000,
+		...(rnd() < 0.45 ? { project_code: `PRJ-2026-${String(Math.floor(rnd() * 900) + 100)}` } : {}),
 		is_advance: advance ? 'yes' : 'no',
 		...(advance ? { advance_amount: Math.floor(rnd() * 8 + 2) * 1000 } : {}),
 		...(rnd() < 0.5 ? { attachment: [mockFile('行程单.pdf', 180 + Math.floor(rnd() * 500))] } : {})

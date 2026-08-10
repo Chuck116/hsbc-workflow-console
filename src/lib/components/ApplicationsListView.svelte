@@ -186,7 +186,13 @@
 
 	/* ---------- 表格列定义 ---------- */
 	const columns: ColumnDef<Application>[] = [
-		{ key: 'id', labelKey: 'applications.colId', mono: true, sortable: true },
+		{
+			key: 'title',
+			labelKey: 'applications.colTitle',
+			sortable: true,
+			sortValue: (row) => String(row.fields.title ?? '')
+		},
+		{ key: 'id', labelKey: 'applications.colId', mono: true, sortable: true },	
 		{
 			key: 'applicant',
 			labelKey: 'applications.colApplicant',
@@ -194,6 +200,8 @@
 			sortValue: (row) => personName(getPerson(row.applicantId), $locale)
 		},
 		{ key: 'dept', labelKey: 'applications.colDept' },
+		{ key: 'depart', labelKey: 'applications.colDepart' },
+		{ key: 'dest', labelKey: 'applications.colDest' },
 		{
 			key: 'createdAt',
 			labelKey: 'applications.colCreated',
@@ -389,9 +397,18 @@
 		bind:selected
 		onrowclick={(row) => goto(`/applications/${row.id}`)}
 	>
-		<!-- 自定义单元格：人员、部门与状态 -->
+		<!-- 自定义单元格：标题 / 行程地点、人员、部门与状态 -->
 		{#snippet cell(row, col)}
-			{#if col.key === 'applicant'}
+			{#if col.key === 'title'}
+				<!-- 标题超长截断，悬停可见全文 -->
+				<span class="block max-w-56 truncate" title={String(row.fields.title ?? '')}>
+					{String(row.fields.title ?? '—')}
+				</span>
+			{:else if col.key === 'depart'}
+				{String(row.fields.depart_place ?? '—')}
+			{:else if col.key === 'dest'}
+				{String(row.fields.dest_place ?? '—')}
+			{:else if col.key === 'applicant'}
 				{personName(getPerson(row.applicantId), $locale)}
 			{:else if col.key === 'dept'}
 				{@const person = getPerson(row.applicantId)}
