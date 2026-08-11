@@ -57,11 +57,9 @@ describe('getDefaultApprovers 默认审批链', () => {
 		expect(getDefaultApprovers('p07')).toEqual(['p09']);
 	});
 
-	it('合规审批人自己发起：不能审批自己，兜底其他负责人', () => {
-		const chain = getDefaultApprovers('p09');
-		expect(chain).not.toContain('p09');
-		expect(chain.length).toBeGreaterThan(0);
-		expect(getPerson(chain[0])?.isManager).toBe(true);
+	it('合规审批人自己发起：演示单账号下本人也入链，保证审批视角可见', () => {
+		// 部门负责人 p07 + 本人 p09（真实系统应禁止自审自批）
+		expect(getDefaultApprovers('p09')).toEqual(['p07', 'p09']);
 	});
 
 	it('未知申请人：至少保留合规审批人', () => {

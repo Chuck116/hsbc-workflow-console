@@ -161,8 +161,9 @@ export function approverRoleKey(pid: string): 'compliance' | 'manager' | 'added'
 
 /**
  * 默认审批人：申请人所在部门负责人 + 合规审批人（沈亦清），并行会签。
- * 不能审批自己：申请人是负责人时跳过该负责人，申请人是合规审批人时不再加入自己；
- * 极端情况下链为空时，兜底任选一位其他负责人。
+ * 申请人是部门负责人时跳过自己；合规审批人始终入链 ——
+ * 演示环境只有单一登录账号，申请人提交后需切换到审批人视角
+ * 看到并处理单据，保证全流程闭环（真实系统在此应禁止自审自批）。
  */
 export function getDefaultApprovers(applicantId: string): string[] {
 	const applicant = getPerson(applicantId);
@@ -171,14 +172,7 @@ export function getDefaultApprovers(applicantId: string): string[] {
 		const manager = PEOPLE.find((p) => p.dept === applicant.dept && p.isManager && p.id !== applicant.id);
 		if (manager) chain.push(manager.id);
 	}
-	// 合规审批人固定入链；但申请人不能是自己的审批人
-	if (CURRENT_USER.id !== applicantId) {
-		chain.push(CURRENT_USER.id);
-	}
-	// 兜底：链为空（申请人既是负责人又是合规审批人）时任选一位其他负责人
-	if (chain.length === 0) {
-		const fallback = PEOPLE.find((p) => p.isManager && p.id !== applicantId);
-		if (fallback) chain.push(fallback.id);
-	}
+	// 合规审批人固定入链（含本人发起的单子：审批视角"待我审批"据此可见）
+	chain.push(CURRENT_USER.id);
 	return chain;
 }

@@ -170,7 +170,7 @@
 		<section class="rounded-lg border border-line bg-paper p-6">
 			<h2 class="text-sm font-semibold text-ink">{$t('newApp.approvalChain')}</h2>
 			<p class="mb-5 mt-1 text-xs text-stone">{$t('approval.parallelHint')}</p>
-			<ApproverPicker bind:chain={approvers} {applicantId} />
+			<ApproverPicker bind:chain={approvers} />
 		</section>
 
 		<!-- 操作区 -->

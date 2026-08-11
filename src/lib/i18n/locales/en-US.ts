@@ -265,7 +265,6 @@ const en: Messages = {
 		addPanelHint: 'Search by employee ID, name, or email, or pick from the list',
 		add: 'Add',
 		added: 'Added',
-		applicantTag: 'Applicant',
 		collapse: 'Collapse',
 		remove: 'Remove this approver',
 		searchPlaceholder: 'Search by employee ID, name, or email to add an approver…',

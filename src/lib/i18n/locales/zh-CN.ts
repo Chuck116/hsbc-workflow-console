@@ -281,7 +281,6 @@ const zh = {
 		addPanelHint: '按工号、姓名或邮箱搜索，或直接从名单中选择',
 		add: '添加',
 		added: '已添加',
-		applicantTag: '申请人',
 		collapse: '收起',
 		remove: '移除该审批人',
 		searchPlaceholder: '按工号、姓名或邮箱搜索人员以添加审批人…',

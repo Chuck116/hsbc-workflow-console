@@ -16,11 +16,9 @@
 	type Props = {
 		/** 审批人列表（Person.id），与父组件双向绑定 */
 		chain: string[];
-		/** 申请人：不能作为自己的审批人 */
-		applicantId: string;
 	};
 
-	let { chain = $bindable([]), applicantId }: Props = $props();
+	let { chain = $bindable([]) }: Props = $props();
 
 	/* ---------- 添加面板 ---------- */
 	let addOpen = $state(false);
@@ -39,9 +37,9 @@
 
 	/* ---------- 审批人编辑 ---------- */
 
-	/** 添加审批人（已存在或为申请人本人则忽略）；面板保持打开便于连续添加 */
+	/** 添加审批人（已存在则忽略）；面板保持打开便于连续添加 */
 	function add(id: string) {
-		if (chain.includes(id) || id === applicantId) return;
+		if (chain.includes(id)) return;
 		chain = [...chain, id];
 	}
 
@@ -163,7 +161,6 @@
 			{:else}
 				{#each results as p (p.id)}
 					{@const inChain = chain.includes(p.id)}
-					{@const isApplicant = p.id === applicantId}
 					<li class="flex items-center gap-3 px-3.5 py-2.5">
 						<span class="clip-hex grid h-8 w-8 shrink-0 place-items-center bg-mist text-xs font-bold text-ink">
 							{(personName(p, $locale) || '?')[0]}
@@ -177,8 +174,8 @@
 								{$t(`dept.${p.dept}`)} · {p.email}
 							</span>
 						</span>
-						<Button size="sm" variant="secondary" disabled={inChain || isApplicant} onclick={() => add(p.id)}>
-							{isApplicant ? $t('approval.applicantTag') : inChain ? $t('approval.added') : $t('approval.add')}
+						<Button size="sm" variant="secondary" disabled={inChain} onclick={() => add(p.id)}>
+							{inChain ? $t('approval.added') : $t('approval.add')}
 						</Button>
 					</li>
 				{/each}

@@ -325,7 +325,7 @@
 				<div class="mt-6 border-t border-line pt-5">
 					<h3 class="text-sm font-semibold text-ink">{$t('applications.detail.workflow')}</h3>
 					<p class="mb-3 mt-1 text-xs text-stone">{$t('approval.parallelHint')}</p>
-					<ApproverPicker bind:chain={editApprovers} applicantId={app.applicantId} />
+					<ApproverPicker bind:chain={editApprovers} />
 				</div>
 
 				<div class="mt-5 flex justify-end gap-2">
